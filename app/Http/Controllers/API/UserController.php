@@ -11,6 +11,7 @@ use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
+    //Register API
     public function register(Request $request)
     {
         // Validation rules
@@ -39,6 +40,7 @@ class UserController extends Controller
         ], 201); // 201 Created status code
     }
 
+    //Login API
     public function login(Request $request)
     {
         // Validation rules
@@ -61,7 +63,6 @@ class UserController extends Controller
         // Generate a response with the access token
         return $this->respondWithToken($token);
     }
-
     protected function respondWithToken($token)
     {
         return response()->json([
@@ -69,5 +70,16 @@ class UserController extends Controller
             'token_type' => 'bearer',
             'expires_in' => auth()->factory()->getTTL() * 60,
         ]);
+    }
+
+    //Logout API
+    public function logout(){
+        try{
+            auth()->logout();
+            return response()->json(['success'=>true,'message'=>'User Logout!']);
+        }catch(\Exception $e){
+            return response()->json(['success'=>false, 'message'=>$e->getMessage()]);
+        }
+
     }
 }
