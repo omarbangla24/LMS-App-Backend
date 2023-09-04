@@ -80,6 +80,15 @@ class UserController extends Controller
         }catch(\Exception $e){
             return response()->json(['success'=>false, 'message'=>$e->getMessage()]);
         }
-
     }
+
+    //Profile Data Get
+    public function profile(){
+        try{
+                return response()->json(['success'=>true, 'data'=> auth()->user()]);
+        }catch(\Exception $e){
+            return response()->josn(['success'=>false, 'message'=> $e->getMessage()]);
+        }
+    }
+    //Profile Data Update
 }
