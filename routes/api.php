@@ -20,6 +20,11 @@ Route::group(['middleware'=>'api'],function($routes){
     Route::post('/login',[UserController::class, 'login']);
     Route::get('/logout',[UserController::class, 'logout']);
     Route::get('/profile',[UserController::class, 'profile']);
+    Route::post('/profileupdate',[UserController::class, 'profileupdate']);
+    Route::get('/refreshtoken',[UserController::class, 'refreshToken']);
+    Route::post('forgetpassword', [UserController::class, 'forgetPassword']);
+    Route::post('checkotp', [UserController::class, 'checkOTP']);
+    Route::post('change_password_by_otp', [UserController::class, 'change_password_by_otp']);
 });
 
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
