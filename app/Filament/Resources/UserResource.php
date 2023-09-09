@@ -34,6 +34,7 @@ class UserResource extends Resource
                     ->required()
                     ->maxLength(255),
                 Forms\Components\DateTimePicker::make('email_verified_at'),
+                Forms\Components\TextInput::make('mobile_no'),
                 Forms\Components\TextInput::make('password')
                     ->password()
                     ->dehydrateStateUsing(fn (string $state): string => Hash::make($state))
@@ -43,7 +44,20 @@ class UserResource extends Resource
                 Forms\Components\Select::make('roles')
                     ->relationship('roles', 'name')
                     ->searchable()
-                    ->preload()
+                    ->preload(),
+                Forms\Components\TextInput::make('token'),
+                Forms\Components\TextInput::make('address'),
+                Forms\Components\TextInput::make('usertype'),
+                Forms\Components\TextInput::make('age'),
+                Forms\Components\TextInput::make('profile_image_path'),
+                Forms\Components\TextInput::make('otp'),
+                Forms\Components\TextInput::make('ref_code'),
+                Forms\Components\TextInput::make('professions_id'),
+                Forms\Components\TextInput::make('bkash_mobile'),
+                Forms\Components\TextInput::make('trans_id'),
+                Forms\Components\TextInput::make('trans_date'),
+                Forms\Components\TextInput::make('amount'),
+                Forms\Components\TextInput::make('status'),
             ]);
     }
 
@@ -57,7 +71,9 @@ class UserResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email_verified_at')
                     ->dateTime()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('mobile_no'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -66,6 +82,32 @@ class UserResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('token')
+                ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('address')
+                ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('usertype'),
+                Tables\Columns\TextColumn::make('age')
+                ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('profile_image_path')
+                ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('otp')
+                ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('ref_code')
+                ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('professions_id')
+                ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('bkash_mobile')
+                ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('trans_id')
+                ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('trans_date')
+                ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('amount')
+                ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('status')
+                ->toggleable(isToggledHiddenByDefault: true),
+
             ])
             ->filters([
                 //

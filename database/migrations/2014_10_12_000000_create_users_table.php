@@ -17,8 +17,22 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('mobile_no');
             $table->rememberToken();
             $table->timestamps();
+            $table->string('token');
+            $table->string('address');
+            $table->string('usertype');
+            $table->integer('age');
+            $table->string('profile_image_path');
+            $table->integer('otp');
+            $table->string('ref_code');
+            $table->string('professions_id');
+            $table->string('bkash_mobile');
+            $table->string('trans_id');
+            $table->string('trans_date');
+            $table->string('amount');
+            $table->string('status');
         });
     }
 
