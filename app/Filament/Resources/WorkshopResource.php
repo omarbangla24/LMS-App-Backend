@@ -17,8 +17,9 @@ class WorkshopResource extends Resource
 {
     protected static ?string $model = Workshop::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
+    protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
+    protected static ?int $navigationSort = 1;
+    protected static ?string $navigationGroup = 'App Features';
     public static function form(Form $form): Form
     {
         return $form
@@ -90,14 +91,14 @@ class WorkshopResource extends Resource
                 Tables\Actions\CreateAction::make(),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -105,5 +106,5 @@ class WorkshopResource extends Resource
             'create' => Pages\CreateWorkshop::route('/create'),
             'edit' => Pages\EditWorkshop::route('/{record}/edit'),
         ];
-    }    
+    }
 }

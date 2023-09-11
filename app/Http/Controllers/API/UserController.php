@@ -17,6 +17,7 @@ use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
+    private $base_URL = 'http://127.0.0.1:8000/';
     //Register API
     public function register(Request $request)
     {
@@ -206,6 +207,7 @@ class UserController extends Controller
             ], 401);
         }
     }
+
     function change_password_by_otp(Request $request)
     {
 

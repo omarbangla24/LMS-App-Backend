@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\AppController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\UserController;
@@ -26,7 +27,15 @@ Route::group(['middleware'=>'api'],function($routes){
     Route::post('checkotp', [UserController::class, 'checkOTP']);
     Route::post('change_password_by_otp', [UserController::class, 'change_password_by_otp']);
 });
-
+Route::middleware('auth:api')->group(function () {
+    Route::get('/slider', [AppController::class, 'slider']);
+    Route::get('/features', [AppController::class, 'features']);
+    Route::get('/franchises', [AppController::class, 'franchises']);
+    Route::get('/workshops', [AppController::class, 'workshops']);
+    Route::get('/businessevents', [AppController::class, 'businessevent']);
+    Route::get('/lifehackscategory', [AppController::class, 'LifeHacksCategory']);
+    Route::get('/lifehacks/{id}', [AppController::class, 'LifeHacks']);
+});
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
 // });

@@ -17,8 +17,9 @@ class FranchiseResource extends Resource
 {
     protected static ?string $model = Franchise::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
+    protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
+    protected static ?int $navigationSort = 1;
+    protected static ?string $navigationGroup = 'App Features';
     public static function form(Form $form): Form
     {
         return $form
@@ -88,14 +89,14 @@ class FranchiseResource extends Resource
                 Tables\Actions\CreateAction::make(),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -103,5 +104,5 @@ class FranchiseResource extends Resource
             'create' => Pages\CreateFranchise::route('/create'),
             'edit' => Pages\EditFranchise::route('/{record}/edit'),
         ];
-    }    
+    }
 }
