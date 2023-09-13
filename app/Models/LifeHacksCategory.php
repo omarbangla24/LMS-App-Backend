@@ -16,7 +16,7 @@ class LifeHacksCategory extends Model
     protected $fillable = [
         'life_cat_title',
         'life_cat_img',
-        'is_premium' // Remove the space before 'is_premium'
+        'is_premium'
     ];
 
     public function LifeHacks(): HasMany

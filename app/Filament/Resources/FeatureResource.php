@@ -26,10 +26,11 @@ class FeatureResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('title')
-                    ->required()
-                    ->maxLength(255),
+                    ->required(),
                 Forms\Components\FileUpload::make('image')
                     ->image()
+                    ->required(),
+                Forms\Components\TextInput::make('tag')
                     ->required(),
                 Forms\Components\TextInput::make('position')
                     ->required()
@@ -44,6 +45,7 @@ class FeatureResource extends Resource
                 Tables\Columns\TextColumn::make('title')
                     ->searchable(),
                 Tables\Columns\ImageColumn::make('image'),
+                Tables\Columns\TextColumn::make('tag'),
                 Tables\Columns\TextColumn::make('position')
                     ->numeric()
                     ->sortable(),

@@ -18,19 +18,19 @@ class LifeHacksCategoryResource extends Resource
     protected static ?string $model = LifeHacksCategory::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $navigationGroup = 'Life Hacks';
+    protected static ?string $navigationGroup = 'Extra';
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('life_cat_title')
-                ->required()
-                ->maxLength(255),
-                Forms\Components\FileUpload::make('life_cat_img')
                 ->required(),
                 Forms\Components\Toggle::make('is_premium')
                 ->onColor('success')
                 ->offColor('danger'),
+                Forms\Components\FileUpload::make('life_cat_img')
+                ->required(),
+
             ]);
     }
 

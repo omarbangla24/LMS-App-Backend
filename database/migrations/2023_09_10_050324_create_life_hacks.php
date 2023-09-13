@@ -14,7 +14,6 @@ return new class extends Migration
     {
         Schema::create('life_hacks', function (Blueprint $table) {
             $table->id();
-            $table->string('life_hacks_cat_id');
             $table->foreignIdFor(LifeHacksCategory::class);
             $table->string('life_hacks_text');
             $table->timestamps();

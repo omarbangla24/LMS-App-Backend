@@ -9,4 +9,8 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateBusinessEvent extends CreateRecord
 {
     protected static string $resource = BusinessEventResource::class;
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }

@@ -35,6 +35,11 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/businessevents', [AppController::class, 'businessevent']);
     Route::get('/lifehackscategory', [AppController::class, 'LifeHacksCategory']);
     Route::get('/lifehacks/{id}', [AppController::class, 'LifeHacks']);
+    Route::get('/ebookcategory', [AppController::class, 'EbookCategory']);
+    Route::get('/ebooks/{id}', [AppController::class, 'Ebooks']);
+    Route::get('/businesstipscategory', [AppController::class, 'BusinessTipsCategory']);
+    Route::get('/businesstips/{id}', [AppController::class, 'BusinessTips']);
+
 });
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();

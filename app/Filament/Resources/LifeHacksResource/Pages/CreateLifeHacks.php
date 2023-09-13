@@ -9,4 +9,8 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateLifeHacks extends CreateRecord
 {
     protected static string $resource = LifeHacksResource::class;
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }

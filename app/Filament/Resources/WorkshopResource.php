@@ -25,25 +25,19 @@ class WorkshopResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('topic')
-                    ->required()
-                    ->maxLength(255),
+                    ->required(),
                 Forms\Components\DatePicker::make('date')
                     ->required(),
                 Forms\Components\TextInput::make('zoom_id')
-                    ->required()
-                    ->numeric(),
+                    ->required(),
                 Forms\Components\TextInput::make('zoom_link')
-                    ->required()
-                    ->maxLength(255),
+                    ->required(),
                 Forms\Components\TextInput::make('zoom_pass')
-                    ->required()
-                    ->maxLength(255),
+                    ->required(),
                 Forms\Components\TextInput::make('meeting_time')
-                    ->required()
-                    ->maxLength(255),
+                    ->required(),
                 Forms\Components\TextInput::make('upcoming_topic')
-                    ->required()
-                    ->maxLength(255),
+                    ->required(),
             ]);
     }
 

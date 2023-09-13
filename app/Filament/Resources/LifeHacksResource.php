@@ -18,12 +18,12 @@ class LifeHacksResource extends Resource
     protected static ?string $model = LifeHacks::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $navigationGroup = 'Life Hacks';
+    protected static ?string $navigationGroup = 'Extra';
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('life_hacks_cat_id')
+                Forms\Components\Select::make('life_hacks_category_id')
                 ->relationship('LifeHacksCategory', 'life_cat_title')
                 ->searchable()
                 ->preload()
@@ -47,9 +47,11 @@ class LifeHacksResource extends Resource
         return $table
             ->columns([
 
-                Tables\Columns\TextColumn::make('life_hacks_cat_id')
+                Tables\Columns\TextColumn::make('LifeHacksCategory.life_cat_title')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('life_hacks_text'),
+                Tables\Columns\TextColumn::make('life_hacks_text')
+                ->wrap()
+                ->words(30),
             ])
             ->filters([
                 //

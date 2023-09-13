@@ -19,14 +19,13 @@ class BusinessEventResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationGroup = 'App Features';
-    
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('title')
                 ->required()
-                ->maxLength(255)
                 ->columnSpan([
                     'sm' => 1,
                     'xl' => 3,
@@ -89,7 +88,9 @@ class BusinessEventResource extends Resource
                 Tables\Columns\TextColumn::make('time'),
                 Tables\Columns\TextColumn::make('location'),
                 Tables\Columns\ImageColumn::make('image'),
-                Tables\Columns\TextColumn::make('description'),
+                Tables\Columns\TextColumn::make('description')
+                ->wrap()
+                ->words(30),
             ])
             ->filters([
                 //

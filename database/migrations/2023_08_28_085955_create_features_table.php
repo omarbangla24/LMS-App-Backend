@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('image');
+            $table->string('tag');
             $table->integer('position');
             $table->timestamps();
         });
