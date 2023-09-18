@@ -5,15 +5,17 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use Filament\Panel;
+use App\Models\Note;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Filament\Models\Contracts\FilamentUser;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Authenticatable implements FilamentUser , JWTSubject // Implement JWTSubject
+class User extends Authenticatable implements FilamentUser, JWTSubject // Implement JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
@@ -34,6 +36,23 @@ class User extends Authenticatable implements FilamentUser , JWTSubject // Imple
         'name',
         'email',
         'password',
+        'usertype',
+        'email_verified_at',
+        'password',
+        'mobile_no',
+        'token',
+        'address',
+        'usertype',
+        'age',
+        'profile_image_path',
+        'otp',
+        'ref_code',
+        'professions_id',
+        'bkash_mobile',
+        'trans_id',
+        'trans_date',
+        'amount',
+        'status',
     ];
 
     /**
@@ -58,6 +77,14 @@ class User extends Authenticatable implements FilamentUser , JWTSubject // Imple
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return $this->hasRole(['Admin','Moderator']);
+        return $this->hasRole(['Admin', 'Moderator']);
+    }
+    public function Course(): HasMany
+    {
+        return $this->hasMany(User::class);
+    }
+    public function Note(): HasMany
+    {
+        return $this->hasMany(Note::class);
     }
 }

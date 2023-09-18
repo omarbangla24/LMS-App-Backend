@@ -3,13 +3,17 @@
 namespace App\Http\Controllers\API;
 
 use Exception;
+use App\Models\News;
+use App\Models\Blogs;
 use App\Models\Ebook;
 use App\Models\Slider;
 use App\Models\Feature;
 use App\Models\Workshop;
 use App\Models\Franchise;
 use App\Models\LifeHacks;
+use App\Models\BlogCategory;
 use App\Models\BusinessTips;
+use App\Models\NewsCategory;
 use Illuminate\Http\Request;
 use App\Models\BusinessEvent;
 use App\Models\EbookCategory;
@@ -75,7 +79,7 @@ class AppController extends Controller
             ]);
         }
     }
-     //Business Event API
+    //Business Event API
     public function businessevent(Request $request)
     {
         if (auth('api')->check()) {
@@ -85,7 +89,7 @@ class AppController extends Controller
             ]);
         }
     }
-     //Life Hacks Category API
+    //Life Hacks Category API
     public function LifeHacksCategory()
     {
         if (auth('api')->check()) {
@@ -105,7 +109,7 @@ class AppController extends Controller
             ]);
         }
     }
-     //Life Hacks API
+    //Life Hacks API
     public function LifeHacks($id)
     {
         if (auth('api')->check()) {
@@ -135,6 +139,7 @@ class AppController extends Controller
                     'Category_ID' => $ebookcategory->id,
                     'Name' => $ebookcategory->name,
                     'is_premium' => $ebookcategory->is_premium,
+                    'Image_URL' => $this->base_URL . 'storage/' . $ebookcategory->image,
                     'Ebook_Link' => $this->base_URL . 'api/ebooks/' . $ebookcategory->id,
                 ];
             return response()->json([
@@ -167,17 +172,19 @@ class AppController extends Controller
         }
     }
     //Business Tips Category API
-    public function BusinessTipsCategory(){
-        if(auth('api')->check()){
+    public function BusinessTipsCategory()
+    {
+        if (auth('api')->check()) {
             $businesstipscategories = BusinessTipsCategory::all();
 
-            foreach($businesstipscategories as $businesstipscategory)
-            $response[] = [
-                'Category_ID' => $businesstipscategory->id,
-                'Name' => $businesstipscategory->name,
-                'is_premium' => $businesstipscategory->is_premium,
-                'Business_Tips_Link' => $this-> base_URL . 'api/businesstips/' . $businesstipscategory->id,
-            ];
+            foreach ($businesstipscategories as $businesstipscategory)
+                $response[] = [
+                    'Category_ID' => $businesstipscategory->id,
+                    'Name' => $businesstipscategory->name,
+                    'is_premium' => $businesstipscategory->is_premium,
+                    'Image_URL' => $this->base_URL . 'storage/' . $businesstipscategory->image,
+                    'Business_Tips_Link' => $this->base_URL . 'api/businesstips/' . $businesstipscategory->id,
+                ];
 
 
             return response()->json([
@@ -187,21 +194,122 @@ class AppController extends Controller
             ]);
         }
     }
-     //Business Tips API
-    public function BusinessTips($id){
-            if(auth('api')->check()){
-                $businesstipslist = BusinessTips::where('business_tips_category_id', $id)->get();
-                foreach( $businesstipslist as $businesstips)
-                $response [] =[
+    //Business Tips API
+    public function BusinessTips($id)
+    {
+        if (auth('api')->check()) {
+            $businesstipslist = BusinessTips::where('business_tips_category_id', $id)->get();
+            foreach ($businesstipslist as $businesstips)
+                $response[] = [
                     'business_tips_category_id' => $businesstips->business_tips_category_id,
                     'title' => $businesstips->title,
                     'description' => $businesstips->description,
                 ];
-                return response()->json([
-                    'Business_Tips' => $response,
-                    'status'=> 200,
-                    'message' => 'success'
-                ]);
-            }
+            return response()->json([
+                'Business_Tips' => $response,
+                'status' => 200,
+                'message' => 'success'
+            ]);
+        }
     }
+    //Blog Category API
+    public function BlogCategory()
+    {
+        if (auth('api')->check()) {
+            $blogcategories = BlogCategory::all();
+            foreach ($blogcategories as $blogcategory)
+                $response[] = [
+                    'Blog_Category_ID' => $blogcategory->id,
+                    'Title' => $blogcategory->name,
+                    'Is_Premium' => $blogcategory->is_premium,
+                    'Image_URL' => $this->base_URL . 'storage/' . $blogcategory->image,
+                    'News_Link' => $this->base_URL . 'api/blogs/' . $blogcategory->id,
+                ];
+            return response()->json([
+                'Blog_Category' => $response,
+                'status' => 200,
+                'message' => 'success'
+            ]);
+        }
+    }
+    //Blog API
+    public function Blogs($id)
+    {
+        if (auth('api')->check()) {
+            $category = BlogCategory::find($id);
+
+            if (!$category) {
+                return response()->json([
+                    'message' => 'Category not found',
+                ], 404);
+            }
+
+            $blogs = Blogs::where('blog_category_id', $id)->get();
+            $response = [];
+
+            foreach ($blogs as $blog) {
+                $response[] = [
+                    'id' => $blog->id,
+                    'title' => $blog->title,
+                    'summary' => $blog->summary,
+                    'description' => $blog->description,
+                    'category_name' => $category->name, // Include the category name
+                    'image' => $this->base_URL . 'storage/' . $blog->image,
+                ];
+            }
+
+            return response()->json([
+                'Blogs' => $response,
+                'status' => 200,
+                'message' => 'success',
+            ]);
+        }
+    }
+    //News Category API
+    public function NewsCategory()
+    {
+        if (auth('api')->check()) {
+        $newscategories = NewsCategory::all();
+        foreach($newscategories as $newscategory)
+        $response [] =[
+            'Name' => $newscategory->name,
+            'Image'=> $this->base_URL.'storage/'.$newscategory->image,
+            'News_Details'=>$this->base_URL.'api/news/'.$newscategory->id,
+        ];
+        return response()->json([
+            'News_Category'=>$response,
+            'status'=>200,
+            'message'=>'success',
+        ]);
+        }
+    }
+    //News API
+    public function News($id)
+    {
+        if (auth('api')->check()) {
+            $category = NewsCategory::find($id);
+            if(!$category){
+                return response()->json([
+                    'message' => 'Category not found',
+                ], 404);
+            }
+            $newsList = News::where('news_category_id', $id)->get();
+            foreach($newsList as $news)
+            $response [] =[
+                'Id' =>$news->id,
+                'Title'=>$news->title,
+                'Summary'=>$news->summary,
+                'Description'=>$news->description,
+                'Image'=>$this->base_URL.'storage/'.$news->image,
+                'News_Category_Name'=>$category->name,
+            ];
+            return response()->json([
+                'News' => $response,
+                'status'=>200,
+                'message'=>'success'
+            ]);
+        }
+    }
+
+
 }

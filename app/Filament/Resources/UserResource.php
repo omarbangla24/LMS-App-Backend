@@ -47,7 +47,15 @@ class UserResource extends Resource
                     ->preload(),
                 Forms\Components\TextInput::make('token'),
                 Forms\Components\TextInput::make('address'),
-                Forms\Components\TextInput::make('usertype'),
+                Forms\Components\Select::make('usertype')
+                ->options([
+                    'guest' => 'Guest',
+                    '1 month subscriber' => '1 Months Subscriber',
+                    '3 months subscriber' => '3 Months Subscriber',
+                    '6 months subscriber' => '6 Months Subscriber',
+                    '12 months subscriber' => '12 Months Subscriber',
+                    'instructor' => 'Instructor',
+                ]),
                 Forms\Components\TextInput::make('age'),
                 Forms\Components\TextInput::make('profile_image_path'),
                 Forms\Components\TextInput::make('otp'),
@@ -86,7 +94,16 @@ class UserResource extends Resource
                 ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('address')
                 ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('usertype'),
+                Tables\Columns\TextColumn::make('usertype')
+                ->badge()
+                ->color(fn (string $state): string => match ($state) {
+                    'guest' => 'gray',
+                    '1 month subscriber' => 'danger',
+                    '3 months subscriber' => 'danger',
+                    '6 months subscriber' => 'danger',
+                    '12 months subscriber' => 'danger',
+                    'instructor' => 'success',
+                }),
                 Tables\Columns\TextColumn::make('age')
                 ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('profile_image_path')

@@ -1,8 +1,14 @@
 <?php
 
-use App\Http\Controllers\API\AppController;
+use App\Models\News;
+use App\Models\Blogs;
+use App\Models\BlogCategory;
+use App\Models\BusinessTips;
+use App\Models\NewsCategory;
 use Illuminate\Http\Request;
+use App\Models\BusinessTipsCategory;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\AppController;
 use App\Http\Controllers\API\UserController;
 
 /*
@@ -39,6 +45,10 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/ebooks/{id}', [AppController::class, 'Ebooks']);
     Route::get('/businesstipscategory', [AppController::class, 'BusinessTipsCategory']);
     Route::get('/businesstips/{id}', [AppController::class, 'BusinessTips']);
+    Route::get('/blogcategory', [AppController::class, 'BlogCategory']);
+    Route::get('/blogs/{id}', [AppController::class, 'Blogs']);
+    Route::get('/newscategory', [AppController::class, 'NewsCategory']);
+    Route::get('/news/{id}', [AppController::class, 'News']);
 
 });
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
