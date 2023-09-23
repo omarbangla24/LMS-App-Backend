@@ -22,34 +22,43 @@ use App\Http\Controllers\API\UserController;
 |
 */
 
-Route::group(['middleware'=>'api'],function($routes){
-    Route::post('/register',[UserController::class,'register']);
-    Route::post('/login',[UserController::class, 'login']);
-    Route::get('/logout',[UserController::class, 'logout']);
-    Route::get('/profile',[UserController::class, 'profile']);
-    Route::post('/profileupdate',[UserController::class, 'profileupdate']);
-    Route::get('/refreshtoken',[UserController::class, 'refreshToken']);
+Route::group(['middleware' => 'api'], function ($routes) {
+    Route::post('/register', [UserController::class, 'register']);
+    Route::post('/login', [UserController::class, 'login']);
+    Route::get('/logout', [UserController::class, 'logout']);
+    Route::get('/profile', [UserController::class, 'profile']);
+    Route::post('/profileupdate', [UserController::class, 'profileupdate']);
+    Route::get('/refreshtoken', [UserController::class, 'refreshToken']);
     Route::post('forgetpassword', [UserController::class, 'forgetPassword']);
     Route::post('checkotp', [UserController::class, 'checkOTP']);
     Route::post('change_password_by_otp', [UserController::class, 'change_password_by_otp']);
 });
 Route::middleware('auth:api')->group(function () {
+    //App Design
     Route::get('/slider', [AppController::class, 'slider']);
     Route::get('/features', [AppController::class, 'features']);
+    Route::get('/notification', [AppController::class, 'Notification']);
+    //App Features
     Route::get('/franchises', [AppController::class, 'franchises']);
     Route::get('/workshops', [AppController::class, 'workshops']);
     Route::get('/businessevents', [AppController::class, 'businessevent']);
+    //Extra
     Route::get('/lifehackscategory', [AppController::class, 'LifeHacksCategory']);
     Route::get('/lifehacks/{id}', [AppController::class, 'LifeHacks']);
     Route::get('/ebookcategory', [AppController::class, 'EbookCategory']);
     Route::get('/ebooks/{id}', [AppController::class, 'Ebooks']);
     Route::get('/businesstipscategory', [AppController::class, 'BusinessTipsCategory']);
     Route::get('/businesstips/{id}', [AppController::class, 'BusinessTips']);
+    //Blog & News
     Route::get('/blogcategory', [AppController::class, 'BlogCategory']);
     Route::get('/blogs/{id}', [AppController::class, 'Blogs']);
     Route::get('/newscategory', [AppController::class, 'NewsCategory']);
     Route::get('/news/{id}', [AppController::class, 'News']);
+    //Course
 
+    //Payment
+    Route::get('/membershipplan', [AppController::class, 'MembershipPlan']);
+    Route::get('/coupon', [AppController::class, 'applyCoupon']);
 });
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();

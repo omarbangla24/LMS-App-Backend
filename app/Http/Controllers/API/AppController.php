@@ -6,17 +6,21 @@ use Exception;
 use App\Models\News;
 use App\Models\Blogs;
 use App\Models\Ebook;
+use App\Models\Coupon;
 use App\Models\Slider;
 use App\Models\Feature;
 use App\Models\Workshop;
 use App\Models\Franchise;
 use App\Models\LifeHacks;
+use App\Models\CouponUsage;
 use App\Models\BlogCategory;
 use App\Models\BusinessTips;
 use App\Models\NewsCategory;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use App\Models\BusinessEvent;
 use App\Models\EbookCategory;
+use App\Models\MembershipPlan;
 use App\Models\LifeHacksCategory;
 use App\Http\Controllers\Controller;
 use App\Models\BusinessTipsCategory;
@@ -269,18 +273,18 @@ class AppController extends Controller
     public function NewsCategory()
     {
         if (auth('api')->check()) {
-        $newscategories = NewsCategory::all();
-        foreach($newscategories as $newscategory)
-        $response [] =[
-            'Name' => $newscategory->name,
-            'Image'=> $this->base_URL.'storage/'.$newscategory->image,
-            'News_Details'=>$this->base_URL.'api/news/'.$newscategory->id,
-        ];
-        return response()->json([
-            'News_Category'=>$response,
-            'status'=>200,
-            'message'=>'success',
-        ]);
+            $newscategories = NewsCategory::all();
+            foreach ($newscategories as $newscategory)
+                $response[] = [
+                    'Name' => $newscategory->name,
+                    'Image' => $this->base_URL . 'storage/' . $newscategory->image,
+                    'News_Details' => $this->base_URL . 'api/news/' . $newscategory->id,
+                ];
+            return response()->json([
+                'News_Category' => $response,
+                'status' => 200,
+                'message' => 'success',
+            ]);
         }
     }
     //News API
@@ -288,28 +292,95 @@ class AppController extends Controller
     {
         if (auth('api')->check()) {
             $category = NewsCategory::find($id);
-            if(!$category){
+            if (!$category) {
                 return response()->json([
                     'message' => 'Category not found',
                 ], 404);
             }
             $newsList = News::where('news_category_id', $id)->get();
-            foreach($newsList as $news)
-            $response [] =[
-                'Id' =>$news->id,
-                'Title'=>$news->title,
-                'Summary'=>$news->summary,
-                'Description'=>$news->description,
-                'Image'=>$this->base_URL.'storage/'.$news->image,
-                'News_Category_Name'=>$category->name,
-            ];
+            foreach ($newsList as $news)
+                $response[] = [
+                    'Id' => $news->id,
+                    'Title' => $news->title,
+                    'Summary' => $news->summary,
+                    'Description' => $news->description,
+                    'Image' => $this->base_URL . 'storage/' . $news->image,
+                    'News_Category_Name' => $category->name,
+                ];
             return response()->json([
                 'News' => $response,
-                'status'=>200,
-                'message'=>'success'
+                'status' => 200,
+                'message' => 'success'
             ]);
         }
     }
 
+    //Notification API
+    public function notification()
+    {
+        if (auth('api')->check()) {
+            $notifications = Notification::all();
+            foreach ($notifications as $notification)
+                $response[] = [
+                    'title' => $notification->title,
+                    'description' => $notification->description,
+                    'image' => $this->base_URL . 'storage/' . $notification->image,
+                    'date' => $notification->date,
+                    'time' => $notification->time,
+                ];
+            return response()->json([
+                'Notification' => $response,
+                'status' => 200,
+                'message' => 'success',
+            ]);
+        }
+    }
+    //Membership Plan
+    public function MembershipPlan()
+    {
+        if (auth('api')->check()) {
+            $membershipplans = MembershipPlan::all();
+            foreach ($membershipplans as $membershipplan)
+                $response[] = [
+                    'title' => $membershipplan->name,
+                    'description' => $membershipplan->price,
+                    'date' => $membershipplan->new_price,
+                ];
+            return response()->json([
+                'Membership Plan' => $response,
+                'status' => 200,
+                'message' => 'success',
+            ]);
+        }
+    }
+    //Coupon
+    public function applyCoupon(Request $request)
+    {
+        if (auth('api')->check()) {
+            //$request->input('coupon_code')
+            $couponCode = $request->input('coupon_code');
+            $user = auth()->user(); // Assuming you have user authentication
 
+            // Check if the coupon code exists in the database
+            $coupon = Coupon::where('code', $couponCode)->first();
+
+            if (!$coupon) {
+                return response()->json(['message' => $couponCode], 404);
+            }
+
+            // Record the coupon usage
+            CouponUsage::create([
+                'coupon_id' => $coupon->id,
+                'user_id' => $user->id,
+            ]);
+
+            // Apply the discount to the user's cart or order
+            // Implement your discount logic here
+
+            return response()->json([
+                'discount'=>$coupon->discount,
+                'message' => 'Coupon applied successfully'
+            ]);
+        }
+    }
 }

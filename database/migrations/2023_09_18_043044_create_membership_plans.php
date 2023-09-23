@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('membership_plans', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->string('price');
+            $table->string('new_price');
             $table->timestamps();
         });
     }

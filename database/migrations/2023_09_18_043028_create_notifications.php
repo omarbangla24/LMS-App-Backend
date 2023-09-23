@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
+            $table->string('description');
+            $table->string('image');
+            $table->date('date');
+            $table->time('time');
             $table->timestamps();
         });
     }
