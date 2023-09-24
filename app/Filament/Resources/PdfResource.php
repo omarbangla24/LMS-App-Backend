@@ -26,7 +26,7 @@ class PdfResource extends Resource
                 Forms\Components\Section::make('Information')->schema([
                     Forms\Components\Select::make('course_id')
                     ->relationship('Course','title'),
-                    Forms\Components\FileUpload::make('pdf_url') ->preserveFilenames(),
+                    Forms\Components\FileUpload::make('pdf_url'),
                     Forms\Components\TextInput::make('title'),
                 ]),
             ]);

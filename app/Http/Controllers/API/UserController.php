@@ -3,14 +3,15 @@
 namespace App\Http\Controllers\API;
 
 
-use App\Mail\GreetingsMail;
-use App\Mail\RegisterReport;
-use App\Mail\ResetPassword;
 use App\Models\User;
+use App\Mail\GreetingsMail;
+use App\Mail\ResetPassword;
+use App\Mail\RegisterReport;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -105,27 +106,76 @@ class UserController extends Controller
             $validator = Validator::make($request->all(), [
                 'id' => 'required',
                 'name' => 'required|string',
-                'email' => 'required|email|string'
+                'email' => 'required|email|string',
+                'profile_image' => 'image|mimes:jpeg,png,jpg,gif|max:9048',
             ]);
+
             if ($validator->fails()) {
-                return response()->json($validator->errors());
+                return response()->json($validator->errors(), 400);
             }
+
             $user = User::find($request->id);
+
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'User not found',
+                ], 404);
+            }
+
+            // Now, update the user's properties
             $user->name = $request->name;
             $user->email = $request->email;
             $user->mobile_no = $request->mobile_no;
             $user->address = $request->address;
             $user->age = $request->age;
-            $user->profile_image_path = $request->profile_image_path;
+
+            if ($request->hasFile('profile_image')) {
+                $profileImage = $request->file('profile_image');
+                $profileImageName = time() . '.' . $profileImage->getClientOriginalExtension();
+                $profileImagePath = 'profile_images/' . $profileImageName;
+
+                Storage::put($profileImagePath, file_get_contents($profileImage));
+                $user->profile_image_path = $profileImagePath;
+            }
+
             $user->save();
+
             return response()->json(['success' => true, 'message' => 'Updated', 'data' => $user]);
         } else {
             return response()->json([
                 'success' => false,
                 'message' => 'User Unauthorized'
-            ]);
+            ], 401);
         }
     }
+    // public function profileupdate(Request $request)
+    // {
+    //     if (auth()->user()) {
+    //         $validator = Validator::make($request->all(), [
+    //             'id' => 'required',
+    //             'name' => 'required|string',
+    //             'email' => 'required|email|string'
+    //         ]);
+    //         if ($validator->fails()) {
+    //             return response()->json($validator->errors());
+    //         }
+    //         $user = User::find($request->id);
+    //         $user->name = $request->name;
+    //         $user->email = $request->email;
+    //         $user->mobile_no = $request->mobile_no;
+    //         $user->address = $request->address;
+    //         $user->age = $request->age;
+    //         $user->profile_image_path = $request->profile_image_path;
+    //         $user->save();
+    //         return response()->json(['success' => true, 'message' => 'Updated', 'data' => $user]);
+    //     } else {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'User Unauthorized'
+    //         ]);
+    //     }
+    // }
     //Refresh Token
     public function refreshToken()
     {

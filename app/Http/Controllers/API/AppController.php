@@ -3,10 +3,14 @@
 namespace App\Http\Controllers\API;
 
 use Exception;
+use App\Models\Pdf;
 use App\Models\News;
+use App\Models\Note;
+use App\Models\User;
 use App\Models\Blogs;
 use App\Models\Ebook;
 use App\Models\Coupon;
+use App\Models\Course;
 use App\Models\Slider;
 use App\Models\Feature;
 use App\Models\Workshop;
@@ -20,6 +24,7 @@ use App\Models\Notification;
 use Illuminate\Http\Request;
 use App\Models\BusinessEvent;
 use App\Models\EbookCategory;
+use App\Models\CourseCategory;
 use App\Models\MembershipPlan;
 use App\Models\LifeHacksCategory;
 use App\Http\Controllers\Controller;
@@ -380,6 +385,208 @@ class AppController extends Controller
             return response()->json([
                 'discount'=>$coupon->discount,
                 'message' => 'Coupon applied successfully'
+            ]);
+        }
+    }
+
+    //pdf
+    public function Pdf($id)
+    {
+        if (auth('api')->check()) {
+            $course = Course::find($id);
+            if (!$course) {
+                return response()->json([
+                    'message' => 'Course not found',
+                ], 404);
+            }
+            $pdfs = $course->Pdf;
+            $response = [];
+            foreach ($pdfs as $pdf) {
+                $response[] = [
+                    'id' => $pdf->id,
+                    'title' => $pdf->title,
+                    'pdf_url' => $this->base_URL . 'storage/' . $pdf->pdf_url,
+                ];
+            }
+            return response()->json([
+                'Pdf' => $response,
+                'status' => 200,
+                'message' => 'success',
+            ]);
+        }
+    }
+
+    //Notes save through API with based on user id and course id
+    public function saveNotes(Request $request)
+    {
+        if (auth('api')->check()) {
+            $user = auth()->user();
+            $course = Course::find($request->input('course_id'));
+            if (!$course) {
+                return response()->json([
+                    'message' => 'Course not found',
+                ], 404);
+            }
+            $note = Note::create([
+                'course_id' => $request->input('course_id'),
+                'user_id' => $user->id,
+                'note_text' => $request->input('note_text'),
+            ]);
+            return response()->json([
+                'message' => 'Note saved successfully',
+            ]);
+        }
+    }
+    //get where route  Route::get('/notes/{user_id}/{course_id}', [AppController::class, 'getNotes']);
+    public function getNotes($user_id, $course_id)
+    {
+        if (auth('api')->check()) {
+            $user = User::find($user_id);
+            $course = Course::find($course_id);
+            if (!$course) {
+                return response()->json([
+                    'message' => 'Course not found',
+                ], 404);
+            }
+            if (!$user) {
+                return response()->json([
+                    'message' => 'User not found',
+                ], 404);
+            }
+            $notes = Note::where('user_id', $user_id)->where('course_id', $course_id)->get();
+            $response = [];
+            foreach ($notes as $note) {
+                $response[] = [
+                    'id' => $note->id,
+                    'note_text' => $note->note_text,
+                ];
+            }
+            return response()->json([
+                'Notes' => $response,
+                'status' => 200,
+                'message' => 'success',
+            ]);
+        }
+    }
+    //Note Delete
+    public function deleteNotes($id)
+    {
+        if (auth('api')->check()) {
+            $note = Note::find($id);
+            if (!$note) {
+                return response()->json([
+                    'message' => 'Note not found',
+                ], 404);
+            }
+            $note->delete();
+            return response()->json([
+                'message' => 'Note deleted successfully',
+            ]);
+        }
+    }
+    //Note Update
+    public function NoteUpdate(Request $request, $id)
+    {
+        if (auth('api')->check()) {
+            $note = Note::find($id);
+            if (!$note) {
+                return response()->json([
+                    'message' => 'Note not found',
+                ], 404);
+            }
+            $note->update([
+                'note_text' => $request->input('note_text'),
+            ]);
+            return response()->json([
+                'message' => 'Note updated successfully',
+            ]);
+        }
+    }
+    //Course Categories
+      public function CourseCategory(){
+        if (auth('api')->check()) {
+            $coursecategories = CourseCategory::all();
+            foreach ($coursecategories as $coursecategory)
+                $response[] = [
+                    'title' => $coursecategory->title,
+                    'color_code' => $coursecategory->color_code,
+                ];
+            return response()->json([
+                'Course Category' => $response,
+                'status' => 200,
+                'message' => 'success',
+            ]);
+        }
+    }
+    //Course list
+    public function Courses(){
+        if (auth('api')->check()) {
+            $categories = CourseCategory::all();
+            $response = [];
+
+            foreach ($categories as $category) {
+                $courses = Course::where('course_category_id', $category->id)->get();
+                $coursesData = [];
+
+                foreach ($courses as $course) {
+                    $coursesData[] = [
+                        'id' => $course->id,
+                        'title' => $course->title,
+                        'image' => $this->base_URL . 'storage/' . $course->image,
+                        'description' => $course->description,
+                        'duration' => $course->duration,
+                        'status' => $course->status,
+                        'instructor_name' => $course->User->name,
+                        'course_category_name' => $course->CourseCategory->title,
+                        'lesson_link' =>$this->base_URL . 'api/lesson/' . $course->id,
+                    ];
+                }
+
+                $response[] = [
+                    'category_id' => $category->id,
+                    'category_name' => $category->title,
+                    'courses' => $coursesData,
+                ];
+            }
+
+            return response()->json([
+                'Categories' =>  $response,
+                'status' => 200,
+                'message' => 'success',
+            ]);
+        }
+    }
+
+    //Lesson list
+    public function Lesson($id){
+        if (auth('api')->check()) {
+            $course = Course::find($id);
+            if (!$course) {
+                return response()->json([
+                    'message' => 'Course not found',
+                ], 404);
+            }
+
+            $lessons = $course->Lesson;
+
+            $response = [];
+
+            foreach ($lessons as $lesson) {
+                $response[] = [
+                    'id' => $lesson->id,
+                    'title' => $lesson->title,
+                    'description' => $lesson->description,
+                    'position' => $lesson->position,
+                    'video' => $lesson->video_link,
+                    'is_premium' => $lesson->is_premium,
+                    'image' => $this->base_URL . 'storage/' . $lesson->image,
+                ];
+            }
+
+            return response()->json([
+                'Lessons' => $response,
+                'status' => 200,
+                'message' => 'success',
             ]);
         }
     }

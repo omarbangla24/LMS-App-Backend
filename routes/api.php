@@ -55,7 +55,16 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/newscategory', [AppController::class, 'NewsCategory']);
     Route::get('/news/{id}', [AppController::class, 'News']);
     //Course
-
+    Route::get('/coursecategory', [AppController::class, 'CourseCategory']);
+    Route::get('/courses', [AppController::class, 'Courses']);
+    Route::get('/lesson/{id}', [AppController::class, 'Lesson']);
+    //PDF
+    Route::get('/pdf/{id}', [AppController::class, 'Pdf']);
+    //Notes
+    Route::post('/notes/save', [AppController::class, 'saveNotes']);
+    Route::get('/notes/{user_id}/{course_id}', [AppController::class, 'getNotes']);
+    Route::delete('/notes/delete/{id}', [AppController::class, 'deleteNotes']);
+    Route::post('/notes/update/{id}', [AppController::class, 'NoteUpdate']);
     //Payment
     Route::get('/membershipplan', [AppController::class, 'MembershipPlan']);
     Route::get('/coupon', [AppController::class, 'applyCoupon']);
