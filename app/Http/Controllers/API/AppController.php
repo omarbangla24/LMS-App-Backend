@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use Exception;
 use App\Models\Pdf;
+use App\Models\File;
 use App\Models\News;
 use App\Models\Note;
 use App\Models\User;
@@ -17,6 +18,7 @@ use App\Models\Workshop;
 use App\Models\Franchise;
 use App\Models\LifeHacks;
 use App\Models\CouponUsage;
+use App\Models\FileRequest;
 use App\Models\BlogCategory;
 use App\Models\BusinessTips;
 use App\Models\NewsCategory;
@@ -29,6 +31,8 @@ use App\Models\MembershipPlan;
 use App\Models\LifeHacksCategory;
 use App\Http\Controllers\Controller;
 use App\Models\BusinessTipsCategory;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class AppController extends Controller
@@ -383,7 +387,7 @@ class AppController extends Controller
             // Implement your discount logic here
 
             return response()->json([
-                'discount'=>$coupon->discount,
+                'discount' => $coupon->discount,
                 'message' => 'Coupon applied successfully'
             ]);
         }
@@ -503,7 +507,8 @@ class AppController extends Controller
         }
     }
     //Course Categories
-      public function CourseCategory(){
+    public function CourseCategory()
+    {
         if (auth('api')->check()) {
             $coursecategories = CourseCategory::all();
             foreach ($coursecategories as $coursecategory)
@@ -519,7 +524,8 @@ class AppController extends Controller
         }
     }
     //Course list
-    public function Courses(){
+    public function Courses()
+    {
         if (auth('api')->check()) {
             $categories = CourseCategory::all();
             $response = [];
@@ -538,7 +544,7 @@ class AppController extends Controller
                         'status' => $course->status,
                         'instructor_name' => $course->User->name,
                         'course_category_name' => $course->CourseCategory->title,
-                        'lesson_link' =>$this->base_URL . 'api/lesson/' . $course->id,
+                        'lesson_link' => $this->base_URL . 'api/lesson/' . $course->id,
                     ];
                 }
 
@@ -558,7 +564,8 @@ class AppController extends Controller
     }
 
     //Lesson list
-    public function Lesson($id){
+    public function Lesson($id)
+    {
         if (auth('api')->check()) {
             $course = Course::find($id);
             if (!$course) {
@@ -588,6 +595,106 @@ class AppController extends Controller
                 'status' => 200,
                 'message' => 'success',
             ]);
+        }
+    }
+    //User Request for file
+    public function listFiles()
+    {
+        if (auth('api')->check()) {
+            $files = File::all();
+            return response()->json([
+                'files' => $files,
+                'status' => 200,
+                'message' => 'success',
+            ]);
+        }
+    }
+
+    public function submitFileRequest(Request $request)
+    {
+        if (auth('api')->check()) {
+            // Validate the request
+            $validator = Validator::make($request->all(), [
+                'file_id' => 'required|exists:files,id',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json(['message' => $validator->errors()->first()], 400);
+            }
+
+            // Find the file by ID
+            $file = File::find($request->input('file_id'));
+
+            if (!$file) {
+                return response()->json(['message' => 'File not found'], 404);
+            }
+
+            // Check if the user has already requested this file
+            $fileRequest = FileRequest::where('file_id', $file->id)
+                ->where('user_id', auth()->user()->id)
+                ->first();
+
+            if ($fileRequest) {
+                return response()->json(['message' => 'You have already requested this file'], 400);
+            }
+
+            // Create a new file request
+            $fileRequest = FileRequest::create([
+                'user_id' => auth()->user()->id,
+                'file_id' => $file->id,
+            ]);
+
+            return response()->json(['message' => 'File request submitted successfully']);
+        }
+    }
+
+
+    public function getUserFileRequests($userId)
+    {
+        if (auth('api')->check()) {
+            // Find the user by ID
+            $user = User::find($userId);
+
+            if (!$user) {
+                return response()->json(['message' => 'User not found'], 404);
+            }
+
+            // Get the user's file requests
+            $fileRequests = FileRequest::where('user_id', $user->id)->get();
+
+            return response()->json(['file_requests' => $fileRequests, 'status' => 200]);
+        }
+    }
+    public function generateDownloadLink($fileId, $userId)
+    {
+        if (auth('api')->check()) {
+              // Find the user by ID
+        $user = User::find($userId);
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        // Find the file request by file ID and user ID
+        $fileRequest = FileRequest::where('file_id', $fileId)
+            ->where('user_id', $userId)
+            ->first();
+
+        if (!$fileRequest) {
+            return response()->json(['message' => 'File request not found'], 404);
+        }
+
+        // Find the requested file by file ID
+        $file = File::find($fileId);
+
+        if (!$file) {
+            return response()->json(['message' => 'File not found'], 404);
+        }
+
+        // Generate the download link (you may need to adjust this based on your file storage configuration)
+        $downloadLink = url('storage/' . $file->path);
+
+        return response()->json(['download_link' => $downloadLink, 'status' => 200]);
         }
     }
 }

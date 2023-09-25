@@ -10,6 +10,7 @@ use App\Models\BusinessTipsCategory;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AppController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\CheckoutURLController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,6 +34,15 @@ Route::group(['middleware' => 'api'], function ($routes) {
     Route::post('checkotp', [UserController::class, 'checkOTP']);
     Route::post('change_password_by_otp', [UserController::class, 'change_password_by_otp']);
 });
+// Bkash Api Start
+// Checkout (URL) User Part
+Route::post('/bkash/create', [CheckoutURLController::class, 'create'])->name('url-create');
+Route::get('/bkash/callback', [CheckoutURLController::class, 'callback'])->name('url-callback');
+
+// Checkout (URL) Admin Part
+// Route::post('/bkash/refund', [CheckoutURLController::class, 'refund'])->name('url-post-refund');
+
+// Bkash Api End
 Route::middleware('auth:api')->group(function () {
     //App Design
     Route::get('/slider', [AppController::class, 'slider']);
@@ -68,6 +78,17 @@ Route::middleware('auth:api')->group(function () {
     //Payment
     Route::get('/membershipplan', [AppController::class, 'MembershipPlan']);
     Route::get('/coupon', [AppController::class, 'applyCoupon']);
+    // List Available Files
+    Route::get('/files', [AppController::class, 'listFiles']);
+
+    // Submit File Request Route
+    Route::post('/file-requests', [AppController::class, 'submitFileRequest']);
+
+    // Get User's File Requests
+    Route::get('/file-requests/user/{userId}', [AppController::class, 'getUserFileRequests']);
+
+    // Generate Download Link for Requested Files
+    Route::get('/download/{fileId}/user/{userId}', [AppController::class, 'generateDownloadLink']);
 });
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();

@@ -7,6 +7,7 @@ namespace App\Models;
 use Filament\Panel;
 use App\Models\Note;
 use App\Models\CouponUsage;
+use App\Models\FileRequest;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
@@ -91,5 +92,9 @@ class User extends Authenticatable implements FilamentUser, JWTSubject // Implem
     public function couponUsages()
     {
         return $this->hasMany(CouponUsage::class);
+    }
+    public function fileRequests(): HasMany
+    {
+        return $this->hasMany(FileRequest::class);
     }
 }
