@@ -31,6 +31,8 @@ return new class extends Migration
             $table->string('bkash_mobile');
             $table->string('trans_id');
             $table->string('trans_date');
+            $table->string('trans_date');
+            $table->string('expire_date');
             $table->string('amount');
             $table->string('status');
         });

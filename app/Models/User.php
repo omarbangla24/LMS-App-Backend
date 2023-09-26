@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use Filament\Panel;
+use App\Models\Idea;
 use App\Models\Note;
 use App\Models\CouponUsage;
 use App\Models\FileRequest;
@@ -16,6 +17,7 @@ use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable implements FilamentUser, JWTSubject // Implement JWTSubject
 {
@@ -53,6 +55,7 @@ class User extends Authenticatable implements FilamentUser, JWTSubject // Implem
         'bkash_mobile',
         'trans_id',
         'trans_date',
+        'expire_date',
         'amount',
         'status',
     ];
@@ -96,5 +99,15 @@ class User extends Authenticatable implements FilamentUser, JWTSubject // Implem
     public function fileRequests(): HasMany
     {
         return $this->hasMany(FileRequest::class);
+    }
+
+    public function likedIdeas(): BelongsToMany
+    {
+        return $this->belongsToMany(Idea::class, 'user_liked_ideas')->withTimestamps();
+    }
+
+    public function hasLiked(Idea $idea): bool
+    {
+        return $this->likedIdeas->contains($idea);
     }
 }

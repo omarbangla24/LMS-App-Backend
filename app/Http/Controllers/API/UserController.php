@@ -290,4 +290,36 @@ class UserController extends Controller
             }
         }
     }
+    //Update Payment Info update status, amount, trans_date, trans_id, bkash_mobile, expire_date
+    public function updatePaymentInfo(Request $request)
+    {
+        if (auth()->user()) {
+            $validator = Validator::make($request->all(), [
+                'id' => 'required',
+                'payment_status' => 'required',
+                'payment_amount' => 'required',
+                'transaction_date' => 'required',
+                'transaction_id' => 'required',
+                'bkash_mobile' => 'required',
+                'expire_date' => 'required',
+            ]);
+            if ($validator->fails()) {
+                return response()->json($validator->errors());
+            }
+            $user = User::find($request->id);
+            $user->payment_status = $request->payment_status;
+            $user->payment_amount = $request->payment_amount;
+            $user->transaction_date = $request->transaction_date;
+            $user->transaction_id = $request->transaction_id;
+            $user->bkash_mobile = $request->bkash_mobile;
+            $user->expire_date = $request->expire_date;
+            $user->save();
+            return response()->json(['success' => true, 'message' => 'Updated', 'data' => $user]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'User Unauthorized'
+            ]);
+        }
+    }
 }

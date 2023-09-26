@@ -30,9 +30,11 @@ Route::group(['middleware' => 'api'], function ($routes) {
     Route::get('/profile', [UserController::class, 'profile']);
     Route::post('/profileupdate', [UserController::class, 'profileupdate']);
     Route::get('/refreshtoken', [UserController::class, 'refreshToken']);
-    Route::post('forgetpassword', [UserController::class, 'forgetPassword']);
-    Route::post('checkotp', [UserController::class, 'checkOTP']);
-    Route::post('change_password_by_otp', [UserController::class, 'change_password_by_otp']);
+    Route::post('/forgetpassword', [UserController::class, 'forgetPassword']);
+    Route::post('/checkotp', [UserController::class, 'checkOTP']);
+    Route::post('/change_password_by_otp', [UserController::class, 'change_password_by_otp']);
+    //route for update status, amount, trans_date, trans_id, bkash_mobile, expire_date
+    Route::post('/update_payment_info', [UserController::class, 'update_payment_info']);
 });
 // Bkash Api Start
 // Checkout (URL) User Part
@@ -89,6 +91,12 @@ Route::middleware('auth:api')->group(function () {
 
     // Generate Download Link for Requested Files
     Route::get('/download/{fileId}/user/{userId}', [AppController::class, 'generateDownloadLink']);
+    //idea
+    Route::get('/idea', [AppController::class, 'getIdea']);
+    //like dislike
+
+
+
 });
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();

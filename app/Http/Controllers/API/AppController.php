@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use Exception;
 use App\Models\Pdf;
 use App\Models\File;
+use App\Models\Idea;
 use App\Models\News;
 use App\Models\Note;
 use App\Models\User;
@@ -697,4 +698,34 @@ class AppController extends Controller
         return response()->json(['download_link' => $downloadLink, 'status' => 200]);
         }
     }
+
+    public function getIdea(Request $request)
+    {
+        if (auth('api')->check()) {
+            // Get the current month and day without the year
+            $currentMonthDay = date("m-d");
+
+            // Query ideas where the month and day of idea_date match the current month and day
+            $ideas = Idea::whereRaw("DATE_FORMAT(idea_date, '%m-%d') = ?", [$currentMonthDay])->get();
+
+            $response = [];
+            foreach ($ideas as $idea) {
+                $response[] = [
+                    'id' => $idea->id,
+                    'title' => $idea->title,
+                    'description' => $idea->description,
+                    'idea_date' => $idea->idea_date,
+                    'like_count' => $idea->like_count,
+                ];
+            }
+
+            return response()->json([
+                'Idea' => $response,
+                'status' => 200,
+                'message' => 'success',
+            ]);
+        }
+    }
+   
+
 }
